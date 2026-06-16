@@ -20,9 +20,16 @@ function initTheme() {
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    // Add transitioning class for smooth fade during toggle
+    document.body.classList.add('theme-transitioning');
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
     updateThemeToggleIcon(newTheme);
+    
+    setTimeout(() => {
+        document.body.classList.remove('theme-transitioning');
+    }, 300);
     
     // Trigger chart refresh if on results page
     if (typeof window.refreshChartsTheme === 'function') {
