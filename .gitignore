@@ -1,0 +1,14 @@
+# Virtual environment
+venv/
+.env
+
+# Cache and local directories
+__pycache__/
+*.pyc
+.firebase/
+.idea/
+.vscode/
+
+# Local databases
+*.db
+reviewguard_db.db

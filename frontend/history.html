@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis History - ReviewGuard AI</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="d-flex align-items-center mb-4 pb-3">
+            <i class="fas fa-shield-halved logo-icon"></i>
+            <span class="logo-text fw-bold fs-4 display-font">ReviewGuard</span>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link-custom" href="dashboard.html"><i class="fas fa-chart-pie"></i>Dashboard</a>
+            <a class="nav-link-custom" href="analyze.html"><i class="fas fa-search-plus"></i>Analyze Reviews</a>
+            <a class="nav-link-custom active" href="history.html"><i class="fas fa-history"></i>History Log</a>
+            <a class="nav-link-custom text-danger mt-5" href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i>Logout</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Nav -->
+        <div class="navbar-top glass-card px-4 py-2 mb-4">
+            <div class="d-flex align-items-center">
+                <button class="navbar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+                    <i class="fas fa-chevron-left icon-close"></i>
+                    <i class="fas fa-bars icon-open"></i>
+                </button>
+                <div class="navbar-brand-logo align-items-center me-3">
+                    <i class="fas fa-shield-halved logo-icon"></i>
+                    <span class="logo-text fw-bold fs-4 display-font">ReviewGuard</span>
+                    <span class="text-muted ms-3 me-1">|</span>
+                </div>
+                <h3 class="mb-0 fw-bold display-font">Audit History Log</h3>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <button class="theme-toggle-btn"><i class="fas fa-moon"></i></button>
+                <div class="d-flex align-items-center gap-2 border-start ps-3">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;"><i class="fas fa-user-tie"></i></div>
+                    <div class="d-none d-md-block">
+                        <div class="fw-bold small" id="userProfileName">Analyst</div>
+                        <div class="text-muted" style="font-size: 10px;">Security Specialist</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar and Count -->
+        <div class="glass-card p-4 mb-4 animate-fade-in">
+            <div class="row g-3 align-items-center justify-content-between">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control bg-light border-start-0 text-dark" id="historySearchInput" placeholder="Search product name or keywords...">
+                    </div>
+                </div>
+                <div class="col-md-auto text-muted small">
+                    Total Logs Found: <span class="fw-bold text-dark" id="historyLogsCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Table -->
+        <div class="glass-card p-4 animate-fade-in" style="animation-delay: 0.15s;">
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Date Audited</th>
+                            <th>Total Reviews</th>
+                            <th>Fake Count</th>
+                            <th>Genuine Count</th>
+                            <th>Authenticity Score</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">Loading logs...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js?v=1.0.1"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadHistoryList();
+            
+            // Search Input listener
+            const searchInput = document.getElementById('historySearchInput');
+            let debounceTimer;
+            
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(async () => {
+                    await loadHistoryList(e.target.value);
+                }, 400);
+            });
+        });
+
+        async function loadHistoryList(query = '') {
+            const data = await fetchHistory(query);
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+            
+            document.getElementById('historyLogsCount').innerText = data.length;
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No audit logs found matching criteria.</td></tr>';
+                return;
+            }
+
+            data.forEach(run => {
+                const dateStr = new Date(run.created_at).toLocaleDateString(undefined, {
+                    month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                
+                const total = run.total_reviews;
+                const genuine = run.genuine_reviews;
+                const authScore = total > 0 ? ((genuine / total) * 100).toFixed(1) : '100';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="fw-bold">${run.product_name}</td>
+                        <td class="text-muted small">${dateStr}</td>
+                        <td>${total}</td>
+                        <td class="text-danger fw-bold">${run.fake_reviews}</td>
+                        <td class="text-success fw-bold">${genuine}</td>
+                        <td class="text-primary fw-bold">${authScore}%</td>
+                        <td>
+                            <a href="result.html?history_id=${run.history_id}" class="btn btn-sm btn-outline-primary px-3 rounded-pill">
+                                <i class="fas fa-eye me-1"></i>View Results
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>

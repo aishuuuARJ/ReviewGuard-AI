@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ReviewGuard AI</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="d-flex align-items-center mb-4 pb-3">
+            <i class="fas fa-shield-halved logo-icon"></i>
+            <span class="logo-text fw-bold fs-4 display-font">ReviewGuard</span>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link-custom active" href="dashboard.html"><i class="fas fa-chart-pie"></i>Dashboard</a>
+            <a class="nav-link-custom" href="analyze.html"><i class="fas fa-search-plus"></i>Analyze Reviews</a>
+            <a class="nav-link-custom" href="history.html"><i class="fas fa-history"></i>History Log</a>
+            <a class="nav-link-custom text-danger mt-5" href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i>Logout</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Nav -->
+        <div class="navbar-top glass-card px-4 py-2 mb-4">
+            <div class="d-flex align-items-center">
+                <button class="navbar-toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+                    <i class="fas fa-chevron-left icon-close"></i>
+                    <i class="fas fa-bars icon-open"></i>
+                </button>
+                <div class="navbar-brand-logo align-items-center me-3">
+                    <i class="fas fa-shield-halved logo-icon"></i>
+                    <span class="logo-text fw-bold fs-4 display-font">ReviewGuard</span>
+                    <span class="text-muted ms-3 me-1">|</span>
+                </div>
+                <h3 class="mb-0 fw-bold display-font">Control Console</h3>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <!-- Theme Toggle Button -->
+                <button class="theme-toggle-btn" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <!-- Profile details -->
+                <div class="d-flex align-items-center gap-2 border-start ps-3">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="d-none d-md-block">
+                        <div class="fw-bold small" id="userProfileName">Analyst</div>
+                        <div class="text-muted" style="font-size: 10px;">Security Specialist</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats Grid -->
+        <div class="row g-4 mb-5 animate-fade-in">
+            <div class="col-md-4">
+                <div class="glass-card stat-card h-100">
+                    <div class="text-muted small fw-medium uppercase mb-1">Total Products Audited</div>
+                    <div class="count-number" id="statProducts">0</div>
+                    <div class="stat-icon"><i class="fas fa-box"></i></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card stat-card h-100 border-start border-danger border-3">
+                    <div class="text-muted small fw-medium uppercase mb-1">Total Fake Reviews Flagged</div>
+                    <div class="count-number text-danger" id="statFakeReviews">0</div>
+                    <div class="stat-icon"><i class="fas fa-skull-crossbones text-danger"></i></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card stat-card h-100 border-start border-success border-3">
+                    <div class="text-muted small fw-medium uppercase mb-1">Average Review Authenticity</div>
+                    <div class="count-number text-success" id="statAuthenticity">100%</div>
+                    <div class="stat-icon"><i class="fas fa-circle-check text-success"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Cards -->
+        <div class="row g-4 mb-5 animate-fade-in" style="animation-delay: 0.15s;">
+            <div class="col-lg-6">
+                <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h4 class="fw-bold mb-3"><i class="fas fa-pen-nib text-primary me-2"></i>Manual Review Input</h4>
+                        <p class="text-muted small">Analyze suspicious reviews directly. Paste and run predictions for instant visual audits and Explainable AI breakdowns.</p>
+                    </div>
+                    <a href="analyze.html?tab=manual" class="btn btn-primary-custom align-self-start mt-3">Start Manual Input</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h4 class="fw-bold mb-3"><i class="fas fa-file-csv text-teal me-2"></i>CSV Dataset Upload</h4>
+                        <p class="text-muted small">Upload bulk customer review datasets (format: review_text, rating). Process hundreds of reviews in seconds with sentiment reports.</p>
+                    </div>
+                    <a href="analyze.html?tab=csv" class="btn btn-outline-custom align-self-start mt-3">Upload CSV File</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Runs Table -->
+        <div class="glass-card p-4 animate-fade-in" style="animation-delay: 0.25s;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Recent Analysis Runs</h4>
+                <a href="history.html" class="btn btn-sm btn-outline-secondary rounded-pill px-3">View All Logs</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-custom table-hover">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Total Reviews</th>
+                            <th>Fake reviews</th>
+                            <th>Genuine reviews</th>
+                            <th>Date Audited</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentHistoryTableBody">
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">Loading historical records...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js?v=1.0.1"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const history = await fetchHistory();
+            renderStats(history);
+            renderRecentHistory(history);
+        });
+
+        function renderStats(history) {
+            const productsCount = history.length;
+            let totalReviews = 0;
+            let totalFake = 0;
+            
+            history.forEach(run => {
+                totalReviews += run.total_reviews;
+                totalFake += run.fake_reviews;
+            });
+            
+            const totalGenuine = totalReviews - totalFake;
+            const avgAuth = totalReviews > 0 ? ((totalGenuine / totalReviews) * 100).toFixed(1) : '100';
+            
+            document.getElementById('statProducts').innerText = productsCount;
+            document.getElementById('statFakeReviews').innerText = totalFake;
+            document.getElementById('statAuthenticity').innerText = `${avgAuth}%`;
+        }
+
+        function renderRecentHistory(history) {
+            const tbody = document.getElementById('recentHistoryTableBody');
+            tbody.innerHTML = '';
+            
+            if (history.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No recent analysis runs. Try running an audit!</td></tr>';
+                return;
+            }
+            
+            // Show top 5
+            const recent = history.slice(0, 5);
+            recent.forEach(run => {
+                const dateStr = new Date(run.created_at).toLocaleDateString(undefined, {
+                    month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="fw-bold">${run.product_name}</td>
+                        <td>${run.total_reviews}</td>
+                        <td class="text-danger fw-bold">${run.fake_reviews}</td>
+                        <td class="text-success fw-bold">${run.genuine_reviews}</td>
+                        <td class="text-muted small">${dateStr}</td>
+                        <td>
+                            <a href="result.html?history_id=${run.history_id}" class="btn btn-sm btn-outline-primary px-3 rounded-pill">
+                                <i class="fas fa-eye me-1"></i>View Results
+                            </a>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Exclude local directories
+venv/
+.git/
+.github/
+.gemini/
+__pycache__/
+*.pyc
+
+# Exclude local databases and logs
+*.db
+*.log
+show_history.py
+
+# Exclude static frontend files (handled by Firebase Hosting)
+frontend/
+firebase.json
+.firebaserc
+Dockerfile
+.dockerignore
