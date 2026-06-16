@@ -1,6 +1,6 @@
 // ReviewGuard AI - Main Frontend JavaScript
 
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = 'https://reviewguard-ai-84oc.onrender.com/api';
 
 // Initialize Theme & Sidebar
 document.addEventListener('DOMContentLoaded', () => {
